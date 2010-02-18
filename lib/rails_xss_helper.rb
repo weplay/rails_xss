@@ -4,7 +4,7 @@ module RailsXssHelper
     if block_given?
       options      = args.first || {}
       html_options = args.second
-      concat(link_to(capture(&block), options, html_options).html_safe!)
+      concat(link_to(capture(&block), options, html_options).html_safe)
     else
       name         = args.first
       options      = args.second || {}
@@ -22,7 +22,7 @@ module RailsXssHelper
       end
 
       href_attr = "href=\"#{url}\"" unless href
-      "<a #{href_attr}#{tag_options}>#{ERB::Util.h(name || url)}</a>".html_safe!
+      "<a #{href_attr}#{tag_options}>#{ERB::Util.h(name || url)}</a>".html_safe
     end
   end
 end
