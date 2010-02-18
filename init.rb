@@ -1,4 +1,3 @@
-# Include hook code here
 begin
   require 'erubis/helpers/rails_helper'
   require 'rails_xss'
@@ -9,6 +8,7 @@ begin
     include RailsXss::SafeHelpers
   end
 
+  require 'rails_xss_helper'
   require 'av_patch'
 rescue LoadError
   puts "Could not load all modules required by rails_xss. Please make sure erubis is installed an try again."
