@@ -4,7 +4,7 @@ module RailsXssHelper
     if block_given?
       options      = args.first || {}
       html_options = args.second
-      concat(link_to(capture(&block), options, html_options).html_safe)
+      concat(link_to(capture(&block), options, html_options))
     else
       name         = args.first
       options      = args.second || {}
