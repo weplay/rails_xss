@@ -22,7 +22,7 @@ module RailsXssHelper
       end
 
       href_attr = "href=\"#{url}\"" unless href
-      ("<a #{href_attr}#{tag_options}>".html_safe << (name || url)).safe_concat("</a>")
+      "<a #{href_attr}#{tag_options}>#{ERB::Util.h(name || url)}</a>".html_safe
     end
   end
 end
