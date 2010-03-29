@@ -3,6 +3,7 @@ begin
   require 'rails_xss'
 
   Erubis::Helpers::RailsHelper.engine_class = RailsXss::Erubis
+  Erubis::Helpers::RailsHelper.show_src = false
 
   Module.class_eval do
     include RailsXss::SafeHelpers
