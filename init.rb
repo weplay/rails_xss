@@ -11,6 +11,7 @@ begin
 
   require 'rails_xss_helper'
   require 'av_patch'
-rescue LoadError
+rescue LoadError => e
   puts "Could not load all modules required by rails_xss. Please make sure erubis is installed an try again."
+  raise e
 end unless $gems_rake_task
