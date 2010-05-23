@@ -31,6 +31,15 @@ ActionController::Base.helper(RailsXssHelper)
 
 module ActionView
   module Helpers
+    module TextHelper
+      def concat(string, unused_binding = nil)
+        if unused_binding
+          ActiveSupport::Deprecation.warn("The binding argument of #concat is no longer needed.  Please remove it from your views and helpers.", caller)
+        end
+
+        output_buffer.concat(string)
+      end
+    end
     module TagHelper
       private
         def content_tag_string_with_escaping(name, content, options, escape = true)
