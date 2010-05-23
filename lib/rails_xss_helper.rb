@@ -38,12 +38,5 @@ module ActionView
         end
         alias_method_chain :content_tag_string, :escaping
     end
-
-    module TextHelper
-      def simple_format_with_escaping(text, html_options={})
-        simple_format_without_escaping(ERB::Util.h(text), options)
-      end
-      alias_method_chain :simple_format, :escaping
-    end
   end
 end
