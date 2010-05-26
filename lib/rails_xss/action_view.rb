@@ -23,6 +23,11 @@ module ActionView
 
         output_buffer.concat(string)
       end
+
+      def simple_format_with_escaping(text, html_options = {})
+        simple_format_without_escaping(ERB::Util.h(text), options)
+      end
+      alias_method_chain :simple_format, :escaping
     end
 
     module TagHelper
