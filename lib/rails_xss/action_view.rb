@@ -15,6 +15,19 @@ module ActionView
   end
 
   module Helpers
+
+    module RawOutputHelper
+      def autoescape
+        if String.rails_xss_enabled?
+          yield
+        else
+          String.enable_rails_xss
+          yield
+          String.disable_rails_xss
+        end
+      end
+    end
+
     module CaptureHelper
       def content_for(name, content = nil, &block)
         ivar = "@content_for_#{name}"
@@ -22,7 +35,7 @@ module ActionView
         instance_variable_set(ivar, "#{instance_variable_get(ivar)}#{ERB::Util.h(content)}".html_safe)
         nil
       end
-    end    
+    end
 
     module TextHelper
       def concat(string, unused_binding = nil)

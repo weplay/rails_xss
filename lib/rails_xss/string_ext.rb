@@ -43,8 +43,13 @@ class String
   alias_method :<<, :concat_with_safety
 
   class << self
+    def rails_xss_enabled?
+      @@rails_xss_enabled
+    end
+
     def enable_rails_xss
       self.class_eval do
+        @@rails_xss_enabled = true
         def html_safe?
           defined?(@_rails_html_safe)
         end
@@ -52,6 +57,7 @@ class String
     end
 
     def disable_rails_xss
+      @@rails_xss_enabled = false
       self.class_eval do
         def html_safe?
           true
