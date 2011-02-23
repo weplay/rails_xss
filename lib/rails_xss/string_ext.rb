@@ -12,9 +12,6 @@ ActiveSupport::SafeBuffer.class_eval do
 end
 
 class String
-  def html_safe?
-    defined?(@_rails_html_safe)
-  end
 
   def html_safe!
     ActiveSupport::Deprecation.warn("Use html_safe with your strings instead of html_safe! See http://yehudakatz.com/2010/02/01/safebuffers-and-rails-3-0/ for the full story.", caller)
@@ -44,6 +41,26 @@ class String
   alias_method_chain :concat, :safety
   undef_method :<<
   alias_method :<<, :concat_with_safety
+
+  class << self
+    def enable_rails_xss
+      self.class_eval do
+        def html_safe?
+          defined?(@_rails_html_safe)
+        end
+      end
+    end
+
+    def disable_rails_xss
+      self.class_eval do
+        def html_safe?
+          true
+        end
+      end
+    end
+  end
+
+  enable_rails_xss
 
   private
     def also_html_safe?(other)
