@@ -4,3 +4,4 @@ require File.expand_path('../../init', __FILE__)
 require 'active_support/test_case'
 require 'action_view/test_case'
 require 'test/unit'
+String.enable_rails_xss

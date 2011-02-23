@@ -60,7 +60,7 @@ class String
     end
   end
 
-  enable_rails_xss
+  disable_rails_xss
 
   private
     def also_html_safe?(other)
