@@ -2,6 +2,11 @@ require 'test_helper'
 
 class UrlHelperTest < ActionView::TestCase
 
+  class ActionController::TestCase
+    # add a catch-all route for the tests only.
+   ActionController::Routing::Routes.draw { |map| map.connect ':controller/:action/:id' }
+  end
+
   def abcd(hash = {})
     hash_for(:a => :b, :c => :d).merge(hash)
   end
