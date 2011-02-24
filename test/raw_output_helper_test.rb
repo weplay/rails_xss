@@ -22,12 +22,14 @@ class RawOutputHelperTest < ActionView::TestCase
 
   test "autoescape escapes within block" do
     String.disable_rails_xss
+    buffer = ActiveSupport::SafeBuffer.new
     autoescape do
-      buffer = ActiveSupport::SafeBuffer.new << "<script>"
-      assert_equal "&lt;script&gt;", buffer
+      buffer << "<script>"
     end
+    assert_equal "&lt;script&gt;", buffer
   end
-  test "autoescape returns to previously disabled state" do
+
+  test "disabled xss protection before and after autoescape" do
     String.disable_rails_xss
     autoescape do
       "foo"
@@ -35,11 +37,25 @@ class RawOutputHelperTest < ActionView::TestCase
     buffer = ActiveSupport::SafeBuffer.new << "<script>"
     assert_equal "<script>", buffer
   end
-  test "autoescape returns to previously enabled state" do
+
+  test "enabled xss protection before and after autoescape" do
     autoescape do
       "foo"
     end
     buffer = ActiveSupport::SafeBuffer.new << "<script>"
     assert_equal "&lt;script&gt;", buffer
+  end
+
+  test "nesting autoescapes all unsafe strings in block" do
+    String.disable_rails_xss
+    buffer = ActiveSupport::SafeBuffer.new
+    autoescape do
+      buffer << "<script>"
+      autoescape do
+        buffer << "<script>"
+      end
+      buffer << "<script>"
+    end
+    assert_equal "&lt;script&gt;&lt;script&gt;&lt;script&gt;", buffer
   end
 end
