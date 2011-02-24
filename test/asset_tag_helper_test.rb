@@ -6,6 +6,7 @@ class AssetTagHelperTest < ActionView::TestCase
       attr_accessor :request
       def url_for(*args) "http://www.example.com" end
     end.new
+    @js_defaults = javascript_include_tag(:defaults)
   end
 
   def test_auto_discovery_link_tag
@@ -15,13 +16,13 @@ class AssetTagHelperTest < ActionView::TestCase
 
   def test_javascript_include_tag_with_blank_asset_id
     ENV["RAILS_ASSET_ID"] = ""
-    assert_dom_equal(%(<script src="/javascripts/test.js" type="text/javascript"></script>\n<script src="/javascripts/prototype.js" type="text/javascript"></script>\n<script src="/javascripts/effects.js" type="text/javascript"></script>\n<script src="/javascripts/dragdrop.js" type="text/javascript"></script>\n<script src="/javascripts/controls.js" type="text/javascript"></script>\n<script src="/javascripts/application.js" type="text/javascript"></script>),
+    assert_dom_equal(%(<script src="/javascripts/test.js" type="text/javascript"></script>\n#{@js_defaults}),
                      javascript_include_tag("test", :defaults))
   end
 
   def test_javascript_include_tag_with_given_asset_id
     ENV["RAILS_ASSET_ID"] = "1"
-    assert_dom_equal(%(<script src="/javascripts/prototype.js?1" type="text/javascript"></script>\n<script src="/javascripts/effects.js?1" type="text/javascript"></script>\n<script src="/javascripts/dragdrop.js?1" type="text/javascript"></script>\n<script src="/javascripts/controls.js?1" type="text/javascript"></script>\n<script src="/javascripts/application.js?1" type="text/javascript"></script>),
+    assert_dom_equal(@js_defaults.gsub(/(\.js)/, ".js?1"),
                      javascript_include_tag(:defaults))
     ENV["RAILS_ASSET_ID"] = ""
   end
