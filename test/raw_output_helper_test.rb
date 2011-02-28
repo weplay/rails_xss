@@ -58,4 +58,15 @@ class RawOutputHelperTest < ActionView::TestCase
     end
     assert_equal "&lt;script&gt;&lt;script&gt;&lt;script&gt;", buffer
   end
+
+  test "ensures disable xss protection if exception in block" do
+    String.disable_rails_xss
+    begin
+      autoescape do
+        raise "Exception raised inside autoescape"
+      end
+    rescue
+      assert !String.rails_xss_enabled?, "autoescape should be disabled after exception thrown"
+    end
+  end
 end

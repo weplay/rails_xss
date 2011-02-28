@@ -21,9 +21,12 @@ module ActionView
         if String.rails_xss_enabled?
           yield
         else
-          String.enable_rails_xss
-          yield
-          String.disable_rails_xss
+          begin
+            String.enable_rails_xss
+            yield
+          ensure
+            String.disable_rails_xss
+          end
         end
       end
     end
