@@ -17,6 +17,16 @@ class ERB
 
     module_function :html_escape
     module_function :h
+    
+    def h_if_xss_enabled(s)
+      if String.rails_xss_enabled?
+        h(s)
+      else
+        s
+      end
+    end
+
+    module_function :h_if_xss_enabled
 
   end
 end

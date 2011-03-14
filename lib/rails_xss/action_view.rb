@@ -35,7 +35,7 @@ module ActionView
       def content_for(name, content = nil, &block)
         ivar = "@content_for_#{name}"
         content = capture(&block) if block_given?
-        instance_variable_set(ivar, "#{instance_variable_get(ivar)}#{ERB::Util.h(content)}".html_safe)
+        instance_variable_set(ivar, "#{instance_variable_get(ivar)}#{ERB::Util.h_if_xss_enabled(content)}".html_safe)
         nil
       end
     end
@@ -50,7 +50,7 @@ module ActionView
       end
 
       def simple_format_with_escaping(text, html_options = {})
-        simple_format_without_escaping(ERB::Util.h(text), html_options)
+        simple_format_without_escaping(ERB::Util.h_if_xss_enabled(text), html_options)
       end
       alias_method_chain :simple_format, :escaping
     end
@@ -58,7 +58,7 @@ module ActionView
     module TagHelper
       private
         def content_tag_string_with_escaping(name, content, options, escape = true)
-          content_tag_string_without_escaping(name, escape ? ERB::Util.h(content) : content, options, escape)
+          content_tag_string_without_escaping(name, escape ? ERB::Util.h_if_xss_enabled(content) : content, options, escape)
         end
         alias_method_chain :content_tag_string, :escaping
     end
@@ -86,7 +86,7 @@ module ActionView
           end
 
           href_attr = "href=\"#{url}\"" unless href
-          "<a #{href_attr}#{tag_options}>#{ERB::Util.h(name || url)}</a>".html_safe
+          "<a #{href_attr}#{tag_options}>#{ERB::Util.h_if_xss_enabled(name || url)}</a>".html_safe
         end
       end
     end

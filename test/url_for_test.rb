@@ -7,6 +7,10 @@ class UrlHelperTest < ActionView::TestCase
    ActionController::Routing::Routes.draw { |map| map.connect ':controller/:action/:id' }
   end
 
+  def teardown
+    String.enable_rails_xss
+  end
+
   def abcd(hash = {})
     hash_for(:a => :b, :c => :d).merge(hash)
   end
@@ -40,5 +44,12 @@ class UrlHelperTest < ActionView::TestCase
   def test_url_for_escaping_is_safety_aware
     assert url_for(abcd(:escape => true)).html_safe?, "escaped urls should be html_safe?"
     assert !url_for(abcd(:escape => false)).html_safe?, "non-escaped urls should not be html_safe?"
+  end
+  
+  def test_link_to_skips_escapes_when_xss_disabled
+    String.disable_rails_xss
+    link = link_to("Some <p>html</p>", "/")
+    expected = %{<a href="/">Some <p>html</p></a>}
+    assert_dom_equal link, expected
   end
 end

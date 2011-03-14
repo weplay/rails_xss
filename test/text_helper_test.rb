@@ -9,6 +9,10 @@ class TextHelperTest < ActionView::TestCase
     end.new
   end
 
+  def teardown
+    String.enable_rails_xss
+  end
+
   def test_simple_format_with_escaping_html_options
     assert_dom_equal(%(<p class="intro">It's nice to have options.</p>),
                      simple_format("It's nice to have options.", :class=>"intro"))
@@ -27,4 +31,12 @@ class TextHelperTest < ActionView::TestCase
   def test_truncate_should_not_be_html_safe
     assert !truncate("Hello World!", :length => 12).html_safe?
   end
+
+  def test_simple_format_with_skips_escape_if_rails_xss_disabled
+    String.disable_rails_xss
+    assert_dom_equal(%(<p class="intro">It's nice to <strong>have</strong> options.</p>),
+                     simple_format("It's nice to <strong>have</strong> options.", :class=>"intro"))
+  end
+
+
 end

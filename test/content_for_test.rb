@@ -1,6 +1,10 @@
 require 'test_helper'
 
-class UrlHelperTest < ActionView::TestCase
+class ContentForTest < ActionView::TestCase
+
+  def teardown
+    String.enable_rails_xss
+  end
 
   def test_content_for_should_yield_html_safe_string
     content_for(:testing, "Some <p>html</p>")
@@ -31,6 +35,14 @@ class UrlHelperTest < ActionView::TestCase
 
   def test_content_for_should_not_escape_html_safe_content_from_block
     content_for(:testing){ "Some <p>html</p>".html_safe }
+    content = instance_variable_get(:"@content_for_testing")
+    expected = %{Some <p>html</p>}
+    assert_dom_equal expected, content
+  end
+  
+  def test_content_for_skips_escape_if_rails_xss_disabled
+    String.disable_rails_xss
+    content_for(:testing){ "Some <p>html</p>" }
     content = instance_variable_get(:"@content_for_testing")
     expected = %{Some <p>html</p>}
     assert_dom_equal expected, content
