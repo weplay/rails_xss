@@ -1,6 +1,11 @@
 require 'test_helper'
 
 class RailsXssTest < ActiveSupport::TestCase
+
+  def teardown
+    String.enable_rails_xss
+  end
+
   test "ERB::Util.h should mark its return value as safe and escape it" do
     escaped = ERB::Util.h("<p>")
     assert_equal "&lt;p&gt;", escaped
@@ -19,5 +24,12 @@ class RailsXssTest < ActiveSupport::TestCase
     assert_nothing_raised do
       assert_equal "1", ERB::Util.h(1)
     end
+  end
+
+  test "ERB::Util.h should always escape when rails_xss disabled" do
+    String.disable_rails_xss
+    escaped = ERB::Util.h("<p>")
+    assert_equal "&lt;p&gt;", escaped
+    assert escaped.html_safe?
   end
 end
