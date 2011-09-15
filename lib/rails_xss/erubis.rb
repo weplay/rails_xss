@@ -1,4 +1,6 @@
+stdout_original, $stdout = $stdout, StringIO.new
 require 'erubis/helpers/rails_helper'
+$stdout = stdout_original
 
 module RailsXss
   class Erubis < ::Erubis::Eruby
